@@ -29,7 +29,7 @@ class LoadingImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image)
-        val intent = Intent(Intent.ACTION_GET_CONTENT).also { it.type = "image/*" }
+        val intent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI).also { it.type = "image/*" }
         startActivityForResult(intent, IMAGE_PICK_REQUEST)
         dialog = ProgressDialog(this)
     }

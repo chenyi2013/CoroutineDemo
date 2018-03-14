@@ -21,7 +21,8 @@ class LoadingImageLifecycleActivity : AppCompatActivity() {
         setContentView(R.layout.activity_loading_image_lifecycle)
 
 
-        val intent = Intent(Intent.ACTION_GET_CONTENT).also { it.type = "image/*" }
+        setContentView(R.layout.activity_image)
+        val intent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI).also { it.type = "image/*" }
         startActivityForResult(intent, LoadingImageLifecycleActivity.IMAGE_PICK_REQUEST)
         dialog = ProgressDialog(this)
     }
@@ -30,7 +31,7 @@ class LoadingImageLifecycleActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LoadingImageLifecycleActivity.IMAGE_PICK_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             dialog?.setMessage("正在加载图片...")
-            dialog?.setCancelable(false)
+//            dialog?.setCancelable(false)
             dialog?.show()
 
             load {

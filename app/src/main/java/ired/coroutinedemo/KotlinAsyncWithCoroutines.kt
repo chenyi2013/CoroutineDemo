@@ -5,13 +5,8 @@ import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.OnLifecycleEvent
 import android.util.Log
-import kotlinx.coroutines.experimental.CoroutineStart
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 
 // Quick & dirty logcat extensions
 inline fun <reified T> T.logd(message: () -> String) = Log.d(T::class.simpleName, message())
@@ -48,7 +43,7 @@ fun <T> LifecycleOwner.load(loader: suspend () -> T): Deferred<T> {
  * will call <code>await()</code> and pass the returned value to <code>block()</code>.
  */
 infix fun <T> Deferred<T>.then(block: suspend (T) -> Unit): Job {
-    return launch(context = UI) {
+    return launch(context = UI,parent = this) {
         try {
             block(this@then.await())
         } catch (e: Exception) {
