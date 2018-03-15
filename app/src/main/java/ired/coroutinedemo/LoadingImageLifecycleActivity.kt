@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_image.*
+import kotlinx.coroutines.experimental.delay
 
 class LoadingImageLifecycleActivity : AppCompatActivity() {
 
@@ -36,7 +37,7 @@ class LoadingImageLifecycleActivity : AppCompatActivity() {
 
             load {
                 //模拟长耗时
-                Thread.sleep(6000)
+                delay(6000)
                 MediaStore.Images.Media.getBitmap(contentResolver, data.data)
             } then {
                 image_view.setImageBitmap(it)

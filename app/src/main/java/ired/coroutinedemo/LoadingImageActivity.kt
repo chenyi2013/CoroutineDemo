@@ -9,10 +9,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_image.*
-import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 
 class LoadingImageActivity : AppCompatActivity() {
 
@@ -39,12 +37,12 @@ class LoadingImageActivity : AppCompatActivity() {
         if (requestCode == IMAGE_PICK_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             imageUri = data.data // So we can store it in onSaveInstanceState
             dialog?.setMessage("正在加载图片...")
-            dialog?.setCancelable(false)
+//            dialog?.setCancelable(false)
             dialog?.show()
-            job = launch(Background) {
-                var bitmap: Bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+            job = async (Background) {
                 //模拟长耗时
-                Thread.sleep(6000)
+                delay(6000)
+                var bitmap: Bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
                 launch(UI) {
                     image_view.setImageBitmap(bitmap)
                     dialog?.dismiss()

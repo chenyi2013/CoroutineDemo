@@ -8,6 +8,9 @@ import android.util.Log
 import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
 
+
+private var job: Job? = null;
+
 // Quick & dirty logcat extensions
 inline fun <reified T> T.logd(message: () -> String) = Log.d(T::class.simpleName, message())
 
@@ -33,7 +36,6 @@ fun <T> LifecycleOwner.load(loader: suspend () -> T): Deferred<T> {
     val deferred = async(context = Background, start = CoroutineStart.LAZY) {
         loader()
     }
-
     lifecycle.addObserver(CoroutineLifecycleListener(deferred))
     return deferred
 }
@@ -43,9 +45,9 @@ fun <T> LifecycleOwner.load(loader: suspend () -> T): Deferred<T> {
  * will call <code>await()</code> and pass the returned value to <code>block()</code>.
  */
 infix fun <T> Deferred<T>.then(block: suspend (T) -> Unit): Job {
-    return launch(context = UI,parent = this) {
+    return launch(UI) {
         try {
-            block(this@then.await())
+            block(await())
         } catch (e: Exception) {
             // Just log the exception to confirm when we get cancelled (Expect JobCancellationException)
             loge(e) { "Exception in then()!" }
