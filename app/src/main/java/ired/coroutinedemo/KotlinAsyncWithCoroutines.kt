@@ -47,7 +47,7 @@ fun <T> LifecycleOwner.load(loader: suspend () -> T): Deferred<T> {
 infix fun <T> Deferred<T>.then(block: suspend (T) -> Unit): Job {
     return launch(UI) {
         try {
-            block(await())
+            block(this@then.await())
         } catch (e: Exception) {
             // Just log the exception to confirm when we get cancelled (Expect JobCancellationException)
             loge(e) { "Exception in then()!" }
